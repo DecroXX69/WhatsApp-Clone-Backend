@@ -34,7 +34,6 @@ router.post('/send', async (req, res) => {
     
     await message.save();
     
-    // Update chat's last message
     await Chat.findOneAndUpdate(
       { wa_id },
       {
@@ -50,7 +49,6 @@ router.post('/send', async (req, res) => {
       { upsert: true, new: true }
     );
     
-    // Emit to real-time clients
     const io = req.app.get('io');
     if (io) {
       io.to(wa_id).emit('new-message', message);
@@ -78,7 +76,6 @@ router.patch('/status/:message_id', async (req, res) => {
       return res.status(404).json({ error: 'Message not found' });
     }
     
-    // Emit status update
     const io = req.app.get('io');
     if (io) {
       io.to(message.wa_id).emit('status-update', { message_id, status });

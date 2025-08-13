@@ -39,14 +39,12 @@ router.patch('/:wa_id/read', async (req, res) => {
   try {
     const { wa_id } = req.params;
     
-    // Reset unread count for this chat
     await Chat.findOneAndUpdate(
       { wa_id },
       { unread_count: 0 },
       { new: true }
     );
     
-    // Mark all messages from this contact as read
     await Message.updateMany(
       { from: wa_id, status: { $ne: 'read' } },
       { status: 'read' }
