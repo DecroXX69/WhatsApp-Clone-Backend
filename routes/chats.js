@@ -34,7 +34,7 @@ router.get('/:wa_id', async (req, res) => {
   }
 });
 
-// Mark chat as read - NEW ENDPOINT
+// Mark chat as read
 router.patch('/:wa_id/read', async (req, res) => {
   try {
     const { wa_id } = req.params;

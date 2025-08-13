@@ -38,6 +38,9 @@ router.post('/send', async (req, res) => {
     await Chat.findOneAndUpdate(
       { wa_id },
       {
+        wa_id,
+        name: `Contact ${wa_id}`,
+        phone_number: wa_id,
         last_message: {
           text,
           timestamp: message.timestamp,
@@ -49,7 +52,9 @@ router.post('/send', async (req, res) => {
     
     // Emit to real-time clients
     const io = req.app.get('io');
-    io.to(wa_id).emit('new-message', message);
+    if (io) {
+      io.to(wa_id).emit('new-message', message);
+    }
     
     res.status(201).json(message);
   } catch (error) {
@@ -75,7 +80,9 @@ router.patch('/status/:message_id', async (req, res) => {
     
     // Emit status update
     const io = req.app.get('io');
-    io.to(message.wa_id).emit('status-update', { message_id, status });
+    if (io) {
+      io.to(message.wa_id).emit('status-update', { message_id, status });
+    }
     
     res.json(message);
   } catch (error) {
